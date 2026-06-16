@@ -1,7 +1,7 @@
-# RakawaranaAI / SaviyaX 🛡️
+# RakawaranaAI 🛡️
 
 ## 1. Introduction
-RakawaranaAI (also known as SaviyaX) is an intelligent, agentic RAG-based (Retrieval-Augmented Generation) disaster response and resource coordination platform. Built to assist in emergency management, it leverages Google's Gemini AI and official disaster management guidelines to analyze incident reports, provide immediate actionable instructions, and efficiently coordinate resources. 
+RakawaranaAI is an intelligent, agentic RAG-based (Retrieval-Augmented Generation) disaster response and resource coordination platform. Built to assist in emergency management, it leverages Google's Gemini AI and official disaster management guidelines to analyze incident reports, provide immediate actionable instructions, and efficiently coordinate resources. 
 
 The system reads official PDF documents (like the *National Emergency Operation Plan — Sri Lanka DMC*) into a ChromaDB vector database. When a user reports a disaster incident, the AI consults these guidelines to provide an accurate, context-aware emergency response.
 
