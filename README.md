@@ -65,4 +65,3 @@ The system reads official PDF documents (like the *National Emergency Operation 
   - The specific departments/agencies that need to be notified.
 
 ---
-*Built for the Agentrix Hackathon* 🚀
