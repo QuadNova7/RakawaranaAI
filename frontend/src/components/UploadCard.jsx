@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { UploadCloud, File, CheckCircle, Loader2 } from 'lucide-react';
 import { uploadGuidelinePDF } from '../services/api';
 
