@@ -4,6 +4,8 @@ import os
 from ..services.pdf_service import extract_text_from_pdf
 from ..services.rag_service import add_document_to_rag
 
+import uuid
+
 router = APIRouter()
 
 @router.post("/")
@@ -11,7 +13,9 @@ async def upload_pdf(file: UploadFile = File(...)):
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
 
-    file_path = f"uploads/{file.filename}"
+    # Prevent race conditions by using a unique temporary filename
+    unique_filename = f"{uuid.uuid4()}_{file.filename}"
+    file_path = f"uploads/{unique_filename}"
     
     # Save the file
     with open(file_path, "wb") as buffer:
@@ -32,8 +36,11 @@ async def upload_pdf(file: UploadFile = File(...)):
             "filename": file.filename,
             "chunks_added": num_chunks
         }
+    except HTTPException:
+        raise
     except Exception as e:
-        # Clean up the file if processing fails
+        raise HTTPException(status_code=500, detail=f"Error processing PDF: {str(e)}")
+    finally:
+        # Guaranteed cleanup to prevent disk/memory leaks
         if os.path.exists(file_path):
             os.remove(file_path)
-        raise HTTPException(status_code=500, detail=f"Error processing PDF: {str(e)}")

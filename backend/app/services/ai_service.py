@@ -25,16 +25,11 @@ def generate_incident_response(incident_description: str, context: str) -> dict:
     {incident_description}
     """
     
-    response = model.generate_content(prompt)
+    response = model.generate_content(
+        prompt,
+        generation_config={"response_mime_type": "application/json"}
+    )
     response_text = response.text.strip()
-    
-    # Clean up markdown if the model included it despite instructions
-    if response_text.startswith("```json"):
-        response_text = response_text[7:]
-    if response_text.startswith("```"):
-        response_text = response_text[3:]
-    if response_text.endswith("```"):
-        response_text = response_text[:-3]
         
     try:
         data = json.loads(response_text)

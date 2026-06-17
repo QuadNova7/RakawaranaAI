@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import UploadCard from '../components/UploadCard';
 import IncidentForm from '../components/IncidentForm';
 import AnalysisReport from '../components/AnalysisReport';

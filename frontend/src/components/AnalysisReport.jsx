@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { ShieldAlert, Info, CheckSquare, Package, BookOpen } from 'lucide-react';
 import clsx from 'clsx';
 
