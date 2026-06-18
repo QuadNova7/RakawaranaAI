@@ -1,7 +1,10 @@
 import chromadb
 import uuid
+import os
 
-client = chromadb.PersistentClient(path="chroma_store")
+chroma_host = os.getenv("CHROMA_HOST", "chromadb")
+chroma_port = int(os.getenv("CHROMA_PORT", 8000))
+client = chromadb.HttpClient(host=chroma_host, port=chroma_port)
 collection = client.get_or_create_collection(name="disaster_guidelines")
 
 def init_rag_system():

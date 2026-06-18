@@ -1,16 +1,44 @@
 services:
-  backend:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: saviyax-chromadb
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./backend/chroma_store:/chroma/chroma
+
+  backend-user:
     build:
       context: ./backend
-    container_name: saviyax-backend
+    container_name: saviyax-backend-user
+    command: ["uvicorn", "app.main_user:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     ports:
       - "8000:8000"
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - chromadb
+
+  backend-admin:
+    build:
+      context: ./backend
+    container_name: saviyax-backend-admin
+    command: ["uvicorn", "app.main_admin:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+    ports:
+      - "8001:8001"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
     volumes:
       - ./backend:/app
       - ./backend/uploads:/app/uploads
-      - ./backend/chroma_store:/app/chroma_store
+    depends_on:
+      - chromadb
 
   frontend:
     build:
@@ -19,9 +47,11 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=${VITE_API_URL}
+      - VITE_USER_API_URL=${VITE_USER_API_URL:-http://localhost:8000/api}
+      - VITE_ADMIN_API_URL=${VITE_ADMIN_API_URL:-http://localhost:8001/api}
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      - backend-user
+      - backend-admin

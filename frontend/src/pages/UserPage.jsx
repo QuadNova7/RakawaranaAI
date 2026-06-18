@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import UploadCard from '../components/UploadCard';
 import IncidentForm from '../components/IncidentForm';
 import AnalysisReport from '../components/AnalysisReport';
 import { reportIncident } from '../services/api';
 import { Activity } from 'lucide-react';
 
-export default function Dashboard() {
+export default function UserPage() {
   const [report, setReport] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState('');
@@ -48,7 +47,6 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-8">
-            <UploadCard />
             <IncidentForm onSubmit={handleIncidentSubmit} isLoading={isAnalyzing} />
             {error && (
               <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm animate-in fade-in">
