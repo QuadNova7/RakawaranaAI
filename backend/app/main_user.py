@@ -3,12 +3,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from .routes import upload, incident
+from .routes import incident
 from .services.rag_service import init_rag_system
 
 load_dotenv()
 
-app = FastAPI(title="RakawaranaAI")
+app = FastAPI(title="RakawaranaAI User API")
 
 # Configure CORS
 app.add_middleware(
@@ -19,16 +19,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create uploads directory if it doesn't exist
-os.makedirs("uploads", exist_ok=True)
-
 # Initialize RAG system (ChromaDB)
 init_rag_system()
 
 # Include Routers
-app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
 app.include_router(incident.router, prefix="/api/incident", tags=["Incident"])
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to RakawaranaAI"}
+    return {"message": "Welcome to RakawaranaAI User Server"}

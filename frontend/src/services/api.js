@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const USER_API_URL = import.meta.env.VITE_USER_API_URL || 'http://localhost:8000/api';
+const ADMIN_API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:8001/api';
 
 export const uploadGuidelinePDF = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
   
-  const response = await axios.post(`${API_URL}/upload/`, formData, {
+  const response = await axios.post(`${ADMIN_API_URL}/upload/`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -15,7 +16,7 @@ export const uploadGuidelinePDF = async (file) => {
 };
 
 export const reportIncident = async (description) => {
-  const response = await axios.post(`${API_URL}/incident/`, {
+  const response = await axios.post(`${USER_API_URL}/incident/`, {
     description,
   });
   return response.data;
