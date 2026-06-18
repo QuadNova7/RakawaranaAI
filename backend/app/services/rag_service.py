@@ -1,15 +1,29 @@
 import chromadb
 import uuid
 import os
+import time
 
 chroma_host = os.getenv("CHROMA_HOST", "chromadb")
 chroma_port = int(os.getenv("CHROMA_PORT", 8000))
-client = chromadb.HttpClient(host=chroma_host, port=chroma_port)
-collection = client.get_or_create_collection(name="disaster_guidelines")
+client = None
+collection = None
 
 def init_rag_system():
     """Initializes the RAG system (called on startup)"""
-    pass
+    global client, collection
+
+    if client is not None and collection is not None:
+        return
+
+    retries = 3
+    for attempt in range(retries):
+        try:
+            client = chromadb.HttpClient(host=chroma_host, port=chroma_port)
+            collection = client.get_or_create_collection(name="disaster_guidelines")
+            return
+        except Exception:
+            if attempt < retries - 1:
+                time.sleep(1)
 
 def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list[str]:
     """Splits text into overlapping chunks."""
@@ -23,6 +37,10 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list[st
 
 def add_document_to_rag(text: str, filename: str) -> int:
     """Chunks the document text and adds it to the ChromaDB collection."""
+    init_rag_system()
+    if collection is None:
+        raise RuntimeError("RAG system is not initialized.")
+
     chunks = chunk_text(text)
     
     documents = []
@@ -45,6 +63,10 @@ def add_document_to_rag(text: str, filename: str) -> int:
 
 def query_rag_system(query: str, n_results: int = 3) -> list[str]:
     """Queries the ChromaDB collection for relevant context."""
+    init_rag_system()
+    if collection is None:
+        return []
+
     if collection.count() == 0:
         return []
         
